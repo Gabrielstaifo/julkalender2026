@@ -6,30 +6,52 @@
     "text_sv": "1 Salig är den som inte följer de gudlösas råd, som inte går in på syndares väg och sitter bland föraktare, 2 utan har sin glädje i HERRENS undervisning och begrundar  hans ord både dag och natt. 3 Han är som ett träd, planterat vid vattenbäckar, som bär sin frukt i rätt tid och vars löv inte vissnar. Och allt han gör, det lyckas väl.",
     "text_ar": "1 طوبى للرجل الذي لم يسلك في مشورة الأشرار، وفي طريق الخطاة لم يقف، وفي مجلس المستهزئين لم يجلس 2 لكن في ناموس الرب مسرته، وفي ناموسه يلهج نهارا وليلا 3 فيكون كشجرة مغروسة عند مجاري المياه، التي تعطي ثمرها في أوانه، وورقها لا يذبل. وكل ما يصنعه ينجح",
     "quiz": {
-      "q_ar": "[PLACEHOLDER] سؤال عن القراءة — اليوم ١",
-      "q_sv": "[PLACEHOLDER] Fråga om läsningen — dag 1",
+      "q_ar": "كم يوماً مكث الرب يسوع على الأرض بعد قيامته؟",
+      "q_sv": "Hur många dagar stannade Herren Jesus på jorden efter sin uppståndelse?",
       "options": [
-        { "ar": "[PLACEHOLDER] الخيار الصحيح", "sv": "[PLACEHOLDER] Rätt alternativ", "correct": true },
-        { "ar": "[PLACEHOLDER] خيار خاطئ ١", "sv": "[PLACEHOLDER] Fel alternativ 1", "correct": false },
-        { "ar": "[PLACEHOLDER] خيار خاطئ ٢", "sv": "[PLACEHOLDER] Fel alternativ 2", "correct": false }
+        { "ar": "٤٠ أيام", "sv": "40 dagar", "correct": true },
+        { "ar": "٥٠ أيام", "sv": "50 dagar", "correct": false },
+        { "ar": "٦٠ أيام", "sv": "60 dagar", "correct": false }
       ],
-      "explain_ar": "[PLACEHOLDER] شرح قصير بالعربية",
-      "explain_sv": "[PLACEHOLDER] Kort förklaring på svenska"
+      "explain_ar": "مكث الرب يسوع على الأرض ٤٠ يوماً بعد قيامته، حيث ظهر لتلاميذه وأعطاهم التعليمات قبل صعوده إلى السماء.",
+      "explain_sv": "Herren Jesus stannade 40 dagar på jorden efter sin uppståndelse, där han visade sig för sina disciple och gav dem instruktioner innan han steg upp till himlen."
     }
   },
   {
     "day": 2,
-    "ref_sv": "[MISSING ref_sv — day 2]",
-    "ref_ar": "[MISSING ref_ar — day 2]",
-    "text_sv": "[MISSING text_sv — day 2]",
-    "text_ar": "[MISSING text_ar — day 2]"
+    "ref_sv": "Psalm 12",
+    "ref_ar": "مزمور ١٢",
+    "text_sv": "4 Sådana är inte de gudlösa, de är som agnar som skingras för vinden. 5 Därför ska inte de gudlösa bestå vid domen, inte syndarna i de rättfärdigas församling. 6 HERREN känner de rättfärdigas väg, men de gudlösas väg leder till fördärvet.",
+    "text_ar": "4 ليس كذلك الأشرار، لكنهم كالعصافة التي تذريها الريح 5 لذلك لا تقوم الأشرار في الدين، ولا الخطاة في جماعة الأبرار 6 لأن الرب يعلم طريق الأبرار، أما طريق الأشرار فتهلك",
+    "quiz": {
+      "q_ar": "كم تبلغ الفترة الزمنية بين القيامة وعيد العنصرة؟",
+      "q_sv": " Hur lång är tidsperioden mellan uppståndelsen & pingstdagen?",
+      "options": [
+        { "ar": "٥٠ يوم", "sv": "50 dagar", "correct": true },
+        { "ar": "١٠ أيام", "sv": "10 dagar", "correct": false },
+        { "ar": "٢٠ يوم", "sv": "20 dagar", "correct": false }
+      ],
+      "explain_ar": "الفترة الزمنية بين القيامة وعيد العنصرة هي ٥٠ يومًا، حيث يحتفل المسيحيون بعيد العنصرة بعد خمسين يومًا من عيد القيامة.",
+      "explain_sv": "Tidsperioden mellan uppståndelsen och pingstdagen är 50 dagar, där kristna firar pingstdagen femtio dagar efter påskdagen."
+    }
   },
   {
     "day": 3,
-    "ref_sv": "[MISSING ref_sv — day 3]",
-    "ref_ar": "[MISSING ref_ar — day 3]",
-    "text_sv": "[MISSING text_sv — day 3]",
-    "text_ar": "[MISSING text_ar — day 3]"
+    "ref_sv": "Psalm 12",
+    "ref_ar": "مزمور ١٢",
+    "text_sv": "4 Sådana är inte de gudlösa, de är som agnar som skingras för vinden. 5 Därför ska inte de gudlösa bestå vid domen, inte syndarna i de rättfärdigas församling. 6 HERREN känner de rättfärdigas väg, men de gudlösas väg leder till fördärvet.",
+    "text_ar": "4 ليس كذلك الأشرار، لكنهم كالعصافة التي تذريها الريح 5 لذلك لا تقوم الأشرار في الدين، ولا الخطاة في جماعة الأبرار 6 لأن الرب يعلم طريق الأبرار، أما طريق الأشرار فتهلك",
+    "quiz": {
+      "q_ar": "أين أُطلق على التلاميذ اسم المسيحيين لأول مرة؟",
+      "q_sv": "Var kallades lärjungarna för första gången kristna?",
+      "options": [
+        { "ar": "انطاكية", "sv": "Antakia", "correct": true },
+        { "ar": "يروشليم", "sv": "Jerusalem", "correct": false },
+        { "ar": "دمشق", "sv": "Damaskus", "correct": false }
+      ],
+      "explain_ar": "أطلق على التلاميذ اسم المسيحيين لأول مرة في مدينة أنطاكية، حيث بدأ الناس يميزون أتباع يسوع عن غيرهم.",
+      "explain_sv": "Lärjungarna kallades för första gången kristna i staden Antakia, där människor började att skilja på Jesu följare från andra."
+    }
   },
   {
     "day": 4,
