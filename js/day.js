@@ -78,7 +78,10 @@
       ? createNavLink('previous', Calendar.dayUrl(day - 1), 'nav__link')
       : createDisabledNav('previous');
     var home = createNavLink('backHome', Calendar.homeUrl(), 'nav__link nav__link--home');
-    var next = day < Calendar.TOTAL_DAYS
+    var total = typeof Calendar.getTotalDays === 'function'
+      ? Calendar.getTotalDays()
+      : Calendar.TOTAL_DAYS;
+    var next = day < total
       ? createNavLink('next', Calendar.dayUrl(day + 1), 'nav__link')
       : createDisabledNav('next');
     nav.replaceChildren(previous, home, next);

@@ -8,7 +8,7 @@
   var TIME_ZONE = 'Europe/Stockholm';
   var TOTAL_DAYS = 25;
 
-  // Client-only rehearsal window: 22–29 November maps to reading days 1–8.
+  // Client-only rehearsal: day 1 starts here, or on ?simulate=YYYY-MM-DD.
   var SIMULATION = {
     start: { year: 2026, month: 11, day: 22 },
     days: 8
@@ -124,7 +124,7 @@
     return { year: values.year, month: values.month, day: values.day };
   }
 
-  // Read the optional test date; malformed values are ignored.
+  // Read the optional rehearsal start date; malformed values are ignored.
   function readSimulateParam() {
     var value = new URLSearchParams(window.location.search).get('simulate');
     return /^\d{4}-\d{2}-\d{2}$/.test(value || '') ? value : null;
@@ -141,35 +141,35 @@
   }
 
   var simulateParam = readSimulateParam();
-  var simulatedDate = parseDateParam(simulateParam);
+  // ?simulate=YYYY-MM-DD anchors day 1; the real clock then advances the rehearsal.
+  var rehearsalStart = parseDateParam(simulateParam);
 
   function dayIndex(date) {
     return Math.floor(Date.UTC(date.year, date.month - 1, date.day) / 86400000);
   }
 
+  function simulationStart() {
+    return rehearsalStart || SIMULATION.start;
+  }
+
   function simulationDateForDay(day) {
-    var date = new Date(Date.UTC(
-      SIMULATION.start.year, SIMULATION.start.month - 1, SIMULATION.start.day + day - 1
-    ));
+    var start = simulationStart();
+    var date = new Date(Date.UTC(start.year, start.month - 1, start.day + day - 1));
     return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, day: date.getUTCDate() };
   }
 
+  // Elapsed rehearsal day: 1 on the start date, then one more per Stockholm day.
   function simulationDay(today) {
-    return dayIndex(today) - dayIndex(SIMULATION.start) + 1;
+    return dayIndex(today) - dayIndex(simulationStart()) + 1;
   }
 
-  function getTotalDays() {
-    return simulatedDate ? SIMULATION.days : TOTAL_DAYS;
+  function isRehearsalMode(mode) {
+    return mode === 'rehearsal' || mode === 'rehearsal-pending';
   }
 
-  // Tiles show the real November date during the rehearsal.
+  // Tiles show the real calendar date during the rehearsal.
   function displayDay(day) {
-    return simulatedDate ? simulationDateForDay(day).day : day;
-  }
-
-  // The simulated date is fixed; real mode keeps using Stockholm wall-clock time.
-  function getEffectiveToday(now) {
-    return simulatedDate || getStockholmToday(now);
+    return rehearsalStart && isRehearsalMode(state.mode) ? simulationDateForDay(day).day : day;
   }
 
   // Wall-clock parts of an instant in Stockholm.
@@ -207,13 +207,18 @@
   }
 
   // Next meaningful boundary: the next rehearsal date, or the real December boundary.
-  function getCountdownTarget(today) {
-    if (simulatedDate) {
-      var day = simulationDay(today);
-      if (day < 1) return localMidnight(SIMULATION.start.year, SIMULATION.start.month, SIMULATION.start.day);
-      if (day >= SIMULATION.days) return localMidnight(SIMULATION.start.year, 12, 1);
-      var next = simulationDateForDay(day + 1);
-      return localMidnight(next.year, next.month, next.day);
+  function getCountdownTarget(today, stateForToday) {
+    if (stateForToday.mode === 'rehearsal-pending') {
+      var start = simulationStart();
+      return localMidnight(start.year, start.month, start.day);
+    }
+    if (stateForToday.mode === 'rehearsal') {
+      var elapsed = simulationDay(today);
+      if (elapsed < SIMULATION.days) {
+        var next = simulationDateForDay(elapsed + 1);
+        return localMidnight(next.year, next.month, next.day);
+      }
+      return localMidnight(today.year, 12, 1);
     }
     if (today.month < 12) return localMidnight(today.year, 12, 1);
     if (today.day < 25) return localMidnight(today.year, 12, today.day + 1);
@@ -225,33 +230,51 @@
     var value = new URLSearchParams(window.location.search).get('preview');
     if (value === 'all') return 'all';
     var day = Number.parseInt(value, 10);
-    if (Number.isInteger(day) && day >= 1 && day <= getTotalDays()) return day;
+    if (Number.isInteger(day) && day >= 1 && day <= TOTAL_DAYS) return day;
     return null;
   }
 
   var preview = readPreview();
 
+  // Rehearsal state follows the real Stockholm date, so it can advance at midnight.
   function computeState(today, previewValue) {
-    var total = getTotalDays();
-    if (previewValue === 'all') return { unlockedThrough: total, todayDay: null };
-    if (typeof previewValue === 'number') {
-      return { unlockedThrough: previewValue, todayDay: previewValue };
+    var elapsed = rehearsalStart ? simulationDay(today) : null;
+    var mode = 'real';
+    if (elapsed !== null && elapsed < 1) mode = 'rehearsal-pending';
+    else if (elapsed !== null && elapsed <= SIMULATION.days) mode = 'rehearsal';
+
+    var total = mode === 'real' ? TOTAL_DAYS : SIMULATION.days;
+
+    if (previewValue === 'all') {
+      return { mode: mode, total: total, unlockedThrough: total, todayDay: null };
     }
-    if (simulatedDate) {
-      var rehearsalDay = simulationDay(today);
+    if (typeof previewValue === 'number') {
       return {
-        unlockedThrough: Math.max(0, Math.min(rehearsalDay, total)),
-        todayDay: rehearsalDay >= 1 && rehearsalDay <= total ? rehearsalDay : null
+        mode: mode,
+        total: Math.min(TOTAL_DAYS, Math.max(total, previewValue)),
+        unlockedThrough: previewValue,
+        todayDay: previewValue
       };
+    }
+    if (mode === 'rehearsal-pending') {
+      return { mode: mode, total: total, unlockedThrough: 0, todayDay: null };
+    }
+    if (mode === 'rehearsal') {
+      return { mode: mode, total: total, unlockedThrough: elapsed, todayDay: elapsed };
     }
     var inDecember = today.month === 12;
     return {
-      unlockedThrough: inDecember ? Math.min(today.day, total) : 0,
-      todayDay: inDecember && today.day <= total ? today.day : null
+      mode: mode,
+      total: TOTAL_DAYS,
+      unlockedThrough: inDecember ? Math.min(today.day, TOTAL_DAYS) : 0,
+      todayDay: inDecember && today.day <= TOTAL_DAYS ? today.day : null
     };
   }
 
-  var state = computeState(getEffectiveToday(), preview);
+  var state = computeState(getStockholmToday(), preview);
+  var countdownTarget = getCountdownTarget(getStockholmToday(), state);
+  var lastDayKey = dayIndex(getStockholmToday());
+  var sayingsCache = null;
 
   function isDayUnlocked(day) {
     return day >= 1 && day <= state.unlockedThrough;
@@ -289,7 +312,7 @@
 
   function initLabels() {
     document.querySelectorAll('[data-i18n]').forEach(function (element) {
-      var key = simulatedDate && element.dataset.i18n === 'intro'
+      var key = isRehearsalMode(state.mode) && element.dataset.i18n === 'intro'
         ? 'introSim'
         : element.dataset.i18n;
       element.textContent = t(key, element.lang || 'sv');
@@ -317,11 +340,7 @@
   // The home card is shown only during the fast, or for an explicit preview day.
   function getSayingDay() {
     if (preview !== null) return preview === 'all' ? 1 : preview;
-    var today = getEffectiveToday();
-    var day = simulatedDate ? simulationDay(today) : today.day;
-    var inWindow = simulatedDate ? day >= 1 && day <= getTotalDays()
-      : today.month === 12 && day >= 1 && day <= getTotalDays();
-    return inWindow ? day : null;
+    return state.todayDay;
   }
 
   function setPlaceholderClass(element, value) {
@@ -339,26 +358,43 @@
     setPlaceholderClass(textAr, entry.text_ar);
   }
 
-  function initSaying() {
-    var card = document.getElementById('saying-card');
-    if (!card) return;
-    var day = getSayingDay();
-    if (day === null) return;
-
+  // Fetch once, then reuse the data when the day changes.
+  function loadSayings(callback) {
+    if (sayingsCache) {
+      callback(sayingsCache);
+      return;
+    }
     fetch('data/sayings.json')
       .then(function (response) {
         if (!response.ok) throw new Error('HTTP ' + response.status);
         return response.json();
       })
       .then(function (sayings) {
-        var entry = sayings.find(function (item) { return item.day === day; });
-        if (!entry) return;
-        renderSaying(entry);
-        card.hidden = false;
+        sayingsCache = sayings;
+        callback(sayings);
       })
       .catch(function () {
         // Keep the optional card out of the way if the file is unavailable.
       });
+  }
+
+  function initSaying() {
+    var card = document.getElementById('saying-card');
+    if (!card) return;
+    var day = getSayingDay();
+    if (day === null) {
+      card.hidden = true;
+      return;
+    }
+    loadSayings(function (sayings) {
+      var entry = sayings.find(function (item) { return item.day === day; });
+      if (!entry) {
+        card.hidden = true;
+        return;
+      }
+      renderSaying(entry);
+      card.hidden = false;
+    });
   }
 
   function pad(value) {
@@ -375,10 +411,8 @@
 
     var message = document.getElementById('countdown-message');
     if (!message) return;
-    var today = getEffectiveToday(now);
-    var isAfterFast = simulatedDate
-      ? simulationDay(today) > SIMULATION.days
-      : today.month === 12 && today.day >= 25;
+    var today = getStockholmToday(now);
+    var isAfterFast = today.month === 12 && today.day >= TOTAL_DAYS;
     if (isAfterFast) {
       message.querySelector('[data-countdown-sv]').textContent = t('allOpen', 'sv');
       message.querySelector('[data-countdown-ar]').textContent = t('allOpen', 'ar');
@@ -388,16 +422,29 @@
     }
   }
 
+  // Rebuild date-dependent UI when the Stockholm day changes.
+  function refreshDynamic(today) {
+    state = computeState(today, preview);
+    countdownTarget = getCountdownTarget(today, state);
+    initLabels();
+    initPreviewNotice();
+    initSaying();
+    initGrid();
+  }
+
   function initCountdown() {
     if (!document.getElementById('countdown')) return;
-    var target = getCountdownTarget(getEffectiveToday());
     function tick() {
       var now = new Date();
-      renderCountdown(target, now);
-      // The rehearsal date is fixed, so its target must not be recomputed each tick.
-      if (!simulatedDate && target.getTime() - now.getTime() <= 0) {
-        target = getCountdownTarget(getStockholmToday(now));
+      var today = getStockholmToday(now);
+      if (dayIndex(today) !== lastDayKey) {
+        lastDayKey = dayIndex(today);
+        refreshDynamic(today);
       }
+      if (countdownTarget.getTime() - now.getTime() <= 0) {
+        countdownTarget = getCountdownTarget(today, state);
+      }
+      renderCountdown(countdownTarget, now);
     }
     tick();
     window.setInterval(tick, 1000);
@@ -442,7 +489,8 @@
   function initGrid() {
     var grid = document.getElementById('calendar-grid');
     if (!grid) return;
-    for (var day = 1; day <= getTotalDays(); day += 1) {
+    grid.replaceChildren();
+    for (var day = 1; day <= state.total; day += 1) {
       grid.appendChild(createTile(day));
     }
   }
@@ -472,8 +520,9 @@
     getPreview: function () { return preview; },
     dayUrl: dayUrl,
     homeUrl: homeUrl,
-    TOTAL_DAYS: getTotalDays(),
+    TOTAL_DAYS: TOTAL_DAYS,
+    getTotalDays: function () { return state.total; },
     displayDay: displayDay,
-    isSimulation: function () { return simulatedDate !== null; }
+    isSimulation: function () { return state.mode !== 'real'; }
   };
 })();
