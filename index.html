@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="sv" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Nativity Fast readings for Mor Ignatius Sunday school.">
+  <title>قراءات صوم الميلاد المقدس، صف مور اغناطيوس</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/progress.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body class="page-home">
+  <a class="skip-link" href="#main" lang="sv" data-i18n="skipToContent">Hoppa till innehållet</a>
+  <div class="sky" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="site-header__brand">
+      <img class="site-header__logo" src="assets/logo.png" alt="" width="72" height="72">
+      <p class="site-header__org">SOUF S:t Jacob</p>
+    </div>
+    <div class="site-header__text">
+      <h1 class="site-header__title" lang="ar" dir="rtl">قراءات صوم الميلاد المقدس، صف مور اغناطيوس</h1>
+      <p class="site-header__subtitle bilingual">
+        <span lang="sv" data-i18n="subtitle"></span>
+        <span lang="ar" dir="rtl" data-i18n="subtitle"></span>
+      </p>
+      <p class="header-divider" aria-hidden="true"><span>★</span></p>
+    </div>
+  </header>
+
+  <main id="main">
+    <p id="preview-notice" class="preview-notice" hidden>
+      <span lang="sv" data-preview-sv></span>
+      <span lang="ar" dir="rtl" data-preview-ar></span>
+    </p>
+
+    <section id="saying-card" class="saying-card" aria-labelledby="saying-heading" hidden>
+      <h2 id="saying-heading" class="saying-card__heading bilingual">
+        <span lang="sv" data-i18n="sayingTitle"></span>
+        <span lang="ar" dir="rtl" data-i18n="sayingTitle"></span>
+      </h2>
+      <div class="saying-card__body">
+        <blockquote class="saying saying--sv" lang="sv" dir="ltr">
+          <p id="saying-sv-text" class="saying__text"></p>
+        </blockquote>
+        <blockquote class="saying saying--ar" lang="ar" dir="rtl">
+          <p id="saying-ar-text" class="saying__text"></p>
+        </blockquote>
+      </div>
+    </section>
+
+    <div class="intro">
+      <p class="bilingual">
+        <span lang="sv" data-i18n="intro"></span>
+        <span lang="ar" dir="rtl" data-i18n="intro"></span>
+      </p>
+    </div>
+
+    <section class="countdown" aria-labelledby="countdown-heading">
+      <h2 id="countdown-heading" class="countdown__heading bilingual">
+        <span lang="sv" data-i18n="countdownTitle"></span>
+        <span lang="ar" dir="rtl" data-i18n="countdownTitle"></span>
+      </h2>
+      <div id="countdown" class="countdown__timer" role="timer" aria-live="off">
+        <div class="unit">
+          <span id="cd-days" class="unit__value">--</span>
+          <span class="unit__label" lang="sv" data-i18n="days"></span>
+          <span class="unit__label" lang="ar" dir="rtl" data-i18n="days"></span>
+        </div>
+        <div class="unit">
+          <span id="cd-hours" class="unit__value">--</span>
+          <span class="unit__label" lang="sv" data-i18n="hours"></span>
+          <span class="unit__label" lang="ar" dir="rtl" data-i18n="hours"></span>
+        </div>
+        <div class="unit">
+          <span id="cd-minutes" class="unit__value">--</span>
+          <span class="unit__label" lang="sv" data-i18n="minutes"></span>
+          <span class="unit__label" lang="ar" dir="rtl" data-i18n="minutes"></span>
+        </div>
+        <div class="unit">
+          <span id="cd-seconds" class="unit__value">--</span>
+          <span class="unit__label" lang="sv" data-i18n="seconds"></span>
+          <span class="unit__label" lang="ar" dir="rtl" data-i18n="seconds"></span>
+        </div>
+      </div>
+      <p id="countdown-message" class="countdown__message bilingual" aria-live="polite" hidden>
+        <span lang="sv" data-countdown-sv></span>
+        <span lang="ar" dir="rtl" data-countdown-ar></span>
+      </p>
+    </section>
+
+    <section class="calendar card" aria-labelledby="calendar-heading">
+      <h2 id="calendar-heading" class="section-title bilingual">
+        <span lang="sv" data-i18n="calendarTitle"></span>
+        <span lang="ar" dir="rtl" data-i18n="calendarTitle"></span>
+      </h2>
+      <div id="calendar-grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="bilingual">
+      <span lang="sv" data-i18n="footer"></span>
+      <span lang="ar" dir="rtl" data-i18n="footer"></span>
+    </p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,1039 @@
+/* Nativity Fast calendar – mobile-first, bilingual, no external assets. */
+
+:root {
+  --burgundy: #7a1426;
+  --deep-burgundy: #4a0d18;
+  --gold: #d4af37;
+  --soft-gold: #e8c872;
+  --green: #12372a;
+  --night: #0f1535;
+  --warm-white: #fdf6e3;
+  --ink: #211d1a;
+  --muted-ink: #5b4a50;
+  --card-bg: rgba(10, 14, 40, 0.6);
+  --card-radius: 16px;
+  --font-sv: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-ar: Amiri, "Noto Naskh Arabic", "Geeza Pro", "Traditional Arabic", "Times New Roman", serif;
+  --radius: 14px;
+  --content-width: 1120px;
+  --border-gold: rgba(212, 175, 55, 0.45);
+  --quiz-green: #2e7d4f;
+  --quiz-red: #b3423f;
+  --quiz-card: #f7f0dd;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--night);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--night);
+  color: var(--warm-white);
+  font-family: var(--font-sv);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 20;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: var(--gold);
+  color: var(--night);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Fixed night scene: image on ::before, contrast overlay and faint snow on ::after.
+   A CSS gradient remains visible if the image file is unavailable. */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 20%, #1b2350 0%, var(--night) 55%, #080b22 100%);
+}
+
+.sky::before,
+.sky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.sky::before {
+  background-image: url('../assets/bg-night.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 42%;
+}
+
+.sky::after {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(253, 246, 227, 0.45) 99%, transparent),
+    radial-gradient(1px 1px at 70% 65%, rgba(232, 200, 114, 0.35) 99%, transparent),
+    linear-gradient(180deg, rgba(4, 7, 24, 0.78) 0%, rgba(8, 11, 32, 0.58) 45%, rgba(4, 7, 24, 0.85) 100%);
+  background-size: 280px 240px, 360px 300px, 100% 100%;
+}
+
+/* The day page uses the same backdrop brightness as the home page. */
+body.page-day .sky::after {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(253, 246, 227, 0.45) 99%, transparent),
+    radial-gradient(1px 1px at 70% 65%, rgba(232, 200, 114, 0.35) 99%, transparent),
+    linear-gradient(180deg, rgba(4, 7, 24, 0.78) 0%, rgba(8, 11, 32, 0.58) 45%, rgba(4, 7, 24, 0.85) 100%);
+}
+
+.site-header,
+main,
+.site-footer {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 1.25rem 0.75rem;
+  text-align: center;
+}
+
+.site-header__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.site-header__logo {
+  width: clamp(56px, 16vw, 84px);
+  height: auto;
+}
+
+.site-header__org {
+  margin: 0;
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.site-header__text {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.site-header__title {
+  margin: 0;
+  color: var(--soft-gold);
+  font-family: var(--font-ar);
+  font-size: clamp(1.25rem, 5vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.45;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+.site-header__subtitle {
+  margin: 0;
+  color: var(--warm-white);
+  font-size: 1.15rem;
+}
+
+.site-header__subtitle [lang="ar"] {
+  font-family: var(--font-ar);
+  font-size: 1.15rem;
+}
+
+/* Thin gold rule with a centred star, replacing the old paired ornaments. */
+.header-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(340px, 100%);
+  margin: 0.55rem auto 0;
+  color: var(--gold);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.header-divider::before,
+.header-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.ornament {
+  margin: 0;
+  color: var(--gold);
+  font-size: 0.9rem;
+  line-height: 1;
+  letter-spacing: 0.35em;
+}
+
+/* Two languages in the page direction; Arabic spans get their own direction. */
+.bilingual {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.bilingual [lang="ar"] {
+  font-family: var(--font-ar);
+  line-height: 1.9;
+}
+
+.intro {
+  margin-block: 0.5rem 1rem;
+}
+
+.saying-card {
+  margin-block: 0 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  background: rgba(253, 246, 227, 0.05);
+}
+
+.saying-card__heading {
+  margin: 0 0 0.75rem;
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+.saying-card__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.saying {
+  margin: 0;
+  padding-inline-start: 0.75rem;
+  border-inline-start: 3px solid var(--burgundy);
+}
+
+.saying--ar {
+  border-inline-start-color: var(--green);
+  font-family: var(--font-ar);
+}
+
+.saying__text {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.saying--ar .saying__text {
+  font-size: 1.25rem;
+  line-height: 2;
+}
+
+.saying-card .is-placeholder {
+  border-inline-start-color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--warm-white);
+}
+
+.preview-notice {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px dashed var(--gold);
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.countdown {
+  margin-block: 1rem 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  background: rgba(253, 246, 227, 0.05);
+}
+
+.countdown__heading {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.countdown__timer {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.unit {
+  padding: 0.5rem 0.2rem;
+  border-radius: 10px;
+  background: rgba(15, 21, 53, 0.55);
+  text-align: center;
+}
+
+.unit__value {
+  display: block;
+  color: var(--gold);
+  font-size: clamp(1.4rem, 6vw, 2.25rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.unit__label {
+  display: block;
+  font-size: 0.72rem;
+}
+
+.unit__label[lang="ar"] {
+  font-family: var(--font-ar);
+  font-size: 0.85rem;
+}
+
+.countdown__message {
+  margin: 0.75rem 0 0;
+  font-weight: 700;
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(6px, 2vw, 14px);
+  max-width: 620px;
+  margin-inline: auto;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-gold);
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(122, 20, 38, 0.9), rgba(18, 55, 42, 0.9));
+  color: var(--warm-white);
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  user-select: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.tile:hover,
+.tile:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+  transform: translateY(-2px);
+}
+
+.tile--today {
+  border-color: var(--gold);
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.55);
+}
+
+.tile--locked {
+  border-style: dashed;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.tile--locked:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.tile__star {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--gold);
+  font-size: 0.7em;
+  line-height: 1;
+}
+
+.day-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-block: 1rem;
+}
+
+.nav__link,
+.button-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  background: rgba(122, 20, 38, 0.55);
+  color: var(--warm-white);
+  font-size: 0.9rem;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+
+.nav__link:hover,
+.button-link:hover {
+  border-color: var(--gold);
+  background: var(--burgundy);
+}
+
+.nav__link span[lang="ar"],
+.button-link span[lang="ar"] {
+  font-family: var(--font-ar);
+  font-size: 0.9rem;
+}
+
+.nav__link--home {
+  background: rgba(18, 55, 42, 0.75);
+}
+
+.nav__link--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.day-content {
+  padding-bottom: 2rem;
+}
+
+.day-header {
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.day-header__title {
+  margin: 0;
+  color: var(--gold);
+  font-size: clamp(1.3rem, 5vw, 2rem);
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+
+.day-header__title [lang="ar"] {
+  font-family: var(--font-ar);
+}
+
+.readings {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.reading {
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border-top: 6px solid var(--burgundy);
+  border-radius: var(--radius);
+  background: var(--warm-white);
+  color: var(--ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.reading--ar {
+  border-top-color: var(--green);
+  font-family: var(--font-ar);
+}
+
+.reading__heading {
+  margin: 0 0 0.5rem;
+  color: var(--burgundy);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.reading--ar .reading__heading {
+  color: var(--green);
+  font-family: var(--font-ar);
+  text-transform: none;
+}
+
+.reading__ref {
+  margin: 0 0 1rem;
+  color: var(--burgundy);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.reading--ar .reading__ref {
+  color: var(--green);
+  font-family: var(--font-ar);
+  font-size: 1.15rem;
+}
+
+.reading__text {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+.reading--ar .reading__text {
+  font-size: 1.25rem;
+  line-height: 2.1;
+}
+
+.reading__text:last-child {
+  margin-bottom: 0;
+}
+
+/* Missing data is visibly marked so it is never mistaken for Scripture. */
+.is-placeholder {
+  padding: 0.4rem 0.6rem;
+  border-inline-start: 3px solid var(--burgundy);
+  border-radius: 6px;
+  background: rgba(122, 20, 38, 0.08);
+  color: var(--muted-ink);
+  font-style: italic;
+}
+
+.reading--ar .is-placeholder {
+  border-inline-start-color: var(--green);
+}
+
+.notice {
+  font-size: 0.9rem;
+}
+
+.reading .notice {
+  margin: 0.75rem 0 0;
+  color: var(--muted-ink);
+  font-style: italic;
+}
+
+.message-box {
+  max-width: 620px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  background: rgba(253, 246, 227, 0.05);
+  text-align: center;
+}
+
+.message-box .notice {
+  margin: 0 0 1rem;
+}
+
+.loading {
+  opacity: 0.8;
+}
+
+/* End-of-reading quiz. White text on the green/red states passes WCAG AA. */
+.quiz-gate {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.quiz__start {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-height: 48px;
+  padding: 0.7rem 1.6rem;
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  background: var(--burgundy);
+  color: var(--warm-white);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.quiz__start:hover {
+  border-color: var(--gold);
+}
+
+.quiz__start:focus-visible,
+.quiz__option:focus-visible,
+.quiz__reset:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.quiz__start [lang="ar"],
+.quiz__reset [lang="ar"] {
+  font-family: var(--font-ar);
+}
+
+.quiz {
+  margin-top: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border-top: 6px solid var(--gold);
+  border-radius: var(--radius);
+  background: var(--quiz-card);
+  color: var(--ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.quiz__heading {
+  margin: 0 0 0.75rem;
+  color: var(--burgundy);
+  font-size: 1.1rem;
+}
+
+.quiz__question {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+}
+
+.quiz__question [lang="ar"] {
+  font-size: 1.2rem;
+}
+
+.quiz__notice {
+  margin: 0 0 0.75rem;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.quiz__options {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+}
+
+.quiz__option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(33, 29, 26, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.quiz__option:hover:not(:disabled) {
+  border-color: var(--burgundy);
+}
+
+.quiz__option:disabled {
+  cursor: not-allowed;
+}
+
+.quiz__icon {
+  min-width: 1.4em;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.quiz__option-text {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.quiz__option-text [lang="ar"] {
+  font-family: var(--font-ar);
+  font-size: 1.05rem;
+}
+
+.quiz__option--correct {
+  border-color: var(--quiz-green);
+  background: var(--quiz-green);
+  color: #fff;
+  animation: quiz-glow 0.8s ease;
+}
+
+.quiz__option--wrong {
+  border-color: var(--quiz-red);
+  background: var(--quiz-red);
+  color: #fff;
+  opacity: 0.85;
+  animation: quiz-shake 0.3s ease;
+}
+
+/* Keep placeholder text readable once an option is colored. */
+.quiz__option--correct .is-placeholder,
+.quiz__option--wrong .is-placeholder {
+  border-inline-start-color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+  color: inherit;
+}
+
+.quiz__feedback {
+  margin: 0 0 0.75rem;
+  min-height: 1.5em;
+  font-weight: 700;
+}
+
+.quiz__explain {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border-inline-start: 3px solid var(--quiz-green);
+  border-radius: 6px;
+  background: rgba(46, 125, 79, 0.1);
+}
+
+.quiz__result {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem;
+}
+
+/* Full star is solid gold; half star clips the gold layer to 50%. */
+.quiz__star {
+  position: relative;
+  display: inline-block;
+  color: rgba(33, 29, 26, 0.25);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.quiz__star-fill {
+  position: absolute;
+  inset: 0;
+  color: var(--gold);
+}
+
+.quiz__star--half .quiz__star-fill {
+  clip-path: inset(0 50% 0 0);
+}
+
+.quiz__star-label {
+  font-size: 0.9rem;
+}
+
+.quiz__reset {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.3rem 0.5rem;
+  border: none;
+  background: none;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes quiz-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes quiz-glow {
+  from { box-shadow: 0 0 0 0 rgba(46, 125, 79, 0.5); }
+  to { box-shadow: 0 0 0 8px rgba(46, 125, 79, 0); }
+}
+
+/* ---- Reference-look theme pass: translucent cards and night-gold details ---- */
+
+.card,
+.saying-card,
+.countdown,
+.calendar,
+.preview-notice,
+.day-nav,
+.message-box {
+  border: 1px solid var(--border-gold);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 22px rgba(212, 175, 55, 0.1);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Solid fallback where backdrop-filter is unsupported. */
+@supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+  .card,
+  .saying-card,
+  .countdown,
+  .calendar,
+  .preview-notice,
+  .day-nav,
+  .message-box,
+  .quiz {
+    background: rgba(10, 14, 40, 0.94);
+  }
+}
+
+.calendar,
+.countdown {
+  padding: 1rem;
+}
+
+.preview-notice {
+  border-style: dashed;
+}
+
+.saying-card__heading,
+.countdown__heading,
+.section-title {
+  color: var(--soft-gold);
+}
+
+.saying {
+  border-inline-start: 3px solid var(--gold);
+}
+
+.saying--ar {
+  border-inline-start-color: var(--soft-gold);
+}
+
+.unit {
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: rgba(4, 7, 24, 0.55);
+}
+
+.unit__value {
+  color: var(--gold);
+  text-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+}
+
+.grid {
+  max-width: 640px;
+}
+
+.tile {
+  border: 1px solid var(--gold);
+  border-radius: 14px;
+  background: linear-gradient(160deg, var(--burgundy), var(--deep-burgundy));
+  box-shadow: inset 0 1px 0 rgba(232, 200, 114, 0.2);
+  font-family: var(--font-sv);
+}
+
+.tile--locked {
+  border-color: rgba(212, 175, 55, 0.35);
+  background: linear-gradient(160deg, rgba(74, 13, 24, 0.8), rgba(15, 21, 53, 0.8));
+  opacity: 0.65;
+}
+
+.tile--today {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.6), inset 0 0 14px rgba(212, 175, 55, 0.25);
+}
+
+.tile--today::after {
+  content: '✦';
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  color: var(--soft-gold);
+  font-size: 0.7em;
+  line-height: 1;
+  animation: tile-sparkle 2.4s ease-in-out infinite;
+}
+
+.tile__star {
+  top: 3px;
+  right: 5px;
+  font-size: 0.75em;
+}
+
+.tile--today .tile__star {
+  right: 18px;
+}
+
+@keyframes tile-sparkle {
+  0%, 100% { opacity: 0.45; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.day-nav {
+  padding: 0.5rem;
+}
+
+.reading {
+  position: relative;
+  border: 1px solid var(--border-gold);
+  border-top: 4px solid var(--gold);
+  background: linear-gradient(180deg, #fffdf5, var(--warm-white));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(212, 175, 55, 0.12);
+}
+
+.reading--ar {
+  border-top-color: var(--soft-gold);
+}
+
+/* Quiz keeps the same card language, with AA-safe text on every state. */
+.quiz {
+  border: 1px solid var(--border-gold);
+  border-top: 3px solid var(--gold);
+  background: var(--card-bg);
+  color: var(--warm-white);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 22px rgba(212, 175, 55, 0.1);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.quiz__heading {
+  color: var(--soft-gold);
+}
+
+.quiz__notice {
+  color: #eadfc4;
+}
+
+.quiz__option {
+  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(253, 246, 227, 0.07);
+  color: var(--warm-white);
+}
+
+.quiz__option:hover:not(:disabled) {
+  background: rgba(122, 20, 38, 0.5);
+}
+
+.quiz .is-placeholder {
+  border-inline-start-color: var(--gold);
+  background: rgba(122, 20, 38, 0.35);
+  color: var(--warm-white);
+}
+
+.quiz__option .is-placeholder {
+  border-inline-start-color: var(--gold);
+  background: rgba(122, 20, 38, 0.35);
+  color: var(--warm-white);
+}
+
+.quiz__explain {
+  background: rgba(46, 125, 79, 0.25);
+}
+
+.quiz__star {
+  color: rgba(253, 246, 227, 0.3);
+}
+
+.quiz__reset {
+  color: var(--soft-gold);
+}
+
+.site-footer {
+  padding-block: 1.5rem 2rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.site-footer [lang="ar"] {
+  font-family: var(--font-ar);
+}
+
+@media (max-width: 699px) {
+  /* Keep the Nativity scene in frame on narrow screens. */
+  .sky::before {
+    background-position: 50% 32%;
+  }
+}
+
+@media (max-width: 359px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sky::before {
+    background-position: 50% 28%;
+  }
+}
+
+@media (min-width: 700px) {
+  /* Three-column header: logo left, text truly centred, empty right column. */
+  .site-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  .site-header__brand {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .site-header__text {
+    grid-column: 2;
+    justify-self: center;
+  }
+
+  .site-header::after {
+    content: '';
+    grid-column: 3;
+  }
+
+  .saying-card__body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .readings {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  /* Gold star floating in the gap between the two language columns. */
+  .reading--ar::before {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    left: -1.5rem;
+    transform: translateY(-50%);
+    color: var(--gold);
+    font-size: 1.1rem;
+    line-height: 1;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
