@@ -55,10 +55,21 @@
   },
   {
     "day": 4,
-    "ref_sv": "[MISSING ref_sv — day 4]",
-    "ref_ar": "[MISSING ref_ar — day 4]",
-    "text_sv": "[MISSING text_sv — day 4]",
-    "text_ar": "[MISSING text_ar — day 4]"
+"ref_sv": "Psalm 12",
+    "ref_ar": "مزمور ١٣",
+    "text_sv": "4 Sådana är inte de gudlösa, de är som agnar som skingras för vinden. 5 Därför ska inte de gudlösa bestå vid domen, inte syndarna i de rättfärdigas församling. 6 HERREN känner de rättfärdigas väg, men de gudlösas väg leder till fördärvet.",
+    "text_ar": "4 ليس كذلك الأشرار، لكنهم كالعصافة التي تذريها الريح 5 لذلك لا تقوم الأشرار في الدين، ولا الخطاة في جماعة الأبرار 6 لأن الرب يعلم طريق الأبرار، أما طريق الأشرار فتهلك",
+    "quiz": {
+      "q_ar": "ما الحدث الذي تحييه الكنيسة في أول أحد من الصوم الكبير؟",
+      "q_sv": "Vilken händelse minns kyrkan den första söndagen på den stora fastan?",
+      "options": [
+        { "ar": "عرس قانا الجليل", "sv": "Bröllopet i Kana", "correct": true },
+        { "ar": "الأبرص", "sv": "Den Spetälske", "correct": false },
+        { "ar": "المخلع", "sv": "Förlamde mannen", "correct": false }
+      ],
+      "explain_ar": "أطلق على التلاميذ اسم المسيحيين لأول مرة في مدينة أنطاكية، حيث بدأ الناس يميزون أتباع يسوع عن غيرهم.",
+      "explain_sv": "Lärjungarna kallades för första gången kristna i staden Antakia, där människor började att skilja på Jesu följare från andra."
+    }
   },
   {
     "day": 5,
