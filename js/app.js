@@ -22,7 +22,7 @@
       introSim: 'En läsning för varje dag den 22–29 november.',
       subtitle: 'Bibelläsning för Mor Ignatius gruppen.',
       sayingTitle: 'Ett ord från kyrkofäderna',
-      countdownTitle: 'Nästa lucka öppnar om',
+      countdownTitle: 'Nästa lucka öppnas om',
       days: 'dagar',
       hours: 'timmar',
       minutes: 'minuter',
