@@ -283,6 +283,11 @@
     container.replaceChildren();
     var half = stars < 1;
     var labelKey = half ? 'quizStarHalf' : 'quizStarFull';
+
+    var labelSv = createElement('span', 'quiz__star-label quiz__star-label--sv', Calendar.t(labelKey, 'sv'));
+    labelSv.lang = 'sv';
+    labelSv.dir = 'ltr';
+
     var star = createElement('span', 'quiz__star' + (half ? ' quiz__star--half' : ''));
     star.setAttribute('role', 'img');
     star.setAttribute('aria-label', Calendar.t(labelKey, 'sv') + ' / ' + Calendar.t(labelKey, 'ar'));
@@ -291,29 +296,16 @@
     var fill = createElement('span', 'quiz__star-fill', '★');
     fill.setAttribute('aria-hidden', 'true');
     star.append(base, fill);
-    container.appendChild(star);
-    var label = createElement('span', 'quiz__star-label bilingual');
-    appendBilingual(label, labelKey);
-    container.appendChild(label);
+
+    var labelAr = createElement('span', 'quiz__star-label quiz__star-label--ar', Calendar.t(labelKey, 'ar'));
+    labelAr.lang = 'ar';
+    labelAr.dir = 'rtl';
+
+    container.append(labelSv, star, labelAr);
   }
 
   function prefersReducedMotion() {
     return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
-
-  function cleanupAfterAnimation(element, animationName, fallbackMs) {
-    var done = false;
-    function finish() {
-      if (done) return;
-      done = true;
-      element.removeEventListener('animationend', onEnd);
-      if (element.parentNode) element.parentNode.removeChild(element);
-    }
-    function onEnd(event) {
-      if (!animationName || event.animationName === animationName) finish();
-    }
-    element.addEventListener('animationend', onEnd);
-    window.setTimeout(finish, fallbackMs || 2200);
   }
 
   function createFxStarSvg() {
@@ -419,44 +411,6 @@
     });
   }
 
-  function showCandle(container) {
-    if (!container || container.querySelector('.quiz__candle')) return;
-    var candle = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    candle.setAttribute('viewBox', '0 0 32 48');
-    candle.setAttribute('aria-hidden', 'true');
-    candle.setAttribute('focusable', 'false');
-    candle.classList.add('quiz__candle');
-
-    var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    body.setAttribute('x', '9');
-    body.setAttribute('y', '20');
-    body.setAttribute('width', '14');
-    body.setAttribute('height', '22');
-    body.setAttribute('rx', '3');
-    body.setAttribute('fill', '#f6edd6');
-
-    var wick = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    wick.setAttribute('x', '15.25');
-    wick.setAttribute('y', '14');
-    wick.setAttribute('width', '1.5');
-    wick.setAttribute('height', '6');
-    wick.setAttribute('rx', '0.75');
-    wick.setAttribute('fill', '#5b4a50');
-
-    var flame = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    flame.classList.add('quiz__candle-flame');
-    var outer = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    outer.setAttribute('d', 'M16 4c2.8 4 6 7 6 10.5a6 6 0 1 1-12 0C10 11 13.2 8 16 4z');
-    outer.setAttribute('fill', '#f4a623');
-    var inner = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    inner.setAttribute('d', 'M16 9c1.6 2.4 3.2 4.2 3.2 6.2a3.2 3.2 0 1 1-6.4 0c0-2 1.6-3.8 3.2-6.2z');
-    inner.setAttribute('fill', '#ffd978');
-    flame.append(outer, inner);
-
-    candle.append(body, wick, flame);
-    container.appendChild(candle);
-  }
-
   function buildQuizBody(section, entry, quiz, record) {
     var heading = createElement('h3', 'quiz__heading bilingual');
     heading.id = 'quiz-heading';
@@ -543,7 +497,6 @@
         var stars = state.attempts === 0 ? 1 : 0.5;
         markCorrect(stars);
         Progress.saveDay(entry.day, { attempts: state.attempts, stars: stars, completed: true });
-        showCandle(result);
         celebrate(button, stars === 1);
       } else {
         state.attempts += 1;
@@ -557,7 +510,6 @@
     if (state.completed) {
       // Solved on a previous visit: show the answer and earned star directly.
       markCorrect(typeof record.stars === 'number' ? record.stars : 1);
-      showCandle(result);
     } else {
       buttons[0].button.focus();
     }
