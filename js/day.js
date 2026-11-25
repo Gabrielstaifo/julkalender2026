@@ -359,33 +359,36 @@
     var container = optionEl.closest('.quiz__options') || optionEl.parentNode;
     if (!container) return;
     if (container.querySelector('.quiz__star-burst')) return;
+    var narrow = !!(window.matchMedia && window.matchMedia('(max-width: 700px)').matches);
     container.style.position = container.style.position || 'relative';
     var burst = createElement('span', 'quiz__star-burst');
     burst.setAttribute('aria-hidden', 'true');
     // Anchor the burst over the correct option so stars rise above it without causing scroll.
+    var burstHeight = narrow ? 96 : 120;
+    var burstTop = narrow ? 72 : 90;
     burst.style.left = optionEl.offsetLeft + 'px';
     burst.style.width = optionEl.offsetWidth + 'px';
-    burst.style.top = (optionEl.offsetTop - 90) + 'px';
-    burst.style.height = '120px';
+    burst.style.top = Math.max(-12, optionEl.offsetTop - burstTop) + 'px';
+    burst.style.height = burstHeight + 'px';
     container.appendChild(burst);
 
-    var count = firstTry ? 10 : 4;
+    var count = firstTry ? (narrow ? 6 : 8) : (narrow ? 3 : 4);
     var remaining = count;
     for (var i = 0; i < count; i += 1) {
       var star = createElement('span', 'quiz__fx-star');
-      var size = 10 + Math.round(Math.random() * 10);
-      var drift = Math.round((Math.random() - 0.5) * 28);
-      var rise = 62 + Math.round(Math.random() * 44);
-      var rotate = Math.round((Math.random() - 0.5) * 90);
-      var delay = Math.round(Math.random() * 220);
-      var duration = 1500 + Math.round(Math.random() * 350);
+      var size = narrow ? (7 + Math.round(Math.random() * 6)) : (9 + Math.round(Math.random() * 8));
+      var drift = Math.round((Math.random() - 0.5) * (narrow ? 18 : 24));
+      var rise = (narrow ? 46 : 58) + Math.round(Math.random() * (narrow ? 28 : 38));
+      var rotate = Math.round((Math.random() - 0.5) * 70);
+      var delay = Math.round(Math.random() * 180);
+      var duration = 1400 + Math.round(Math.random() * 320);
       star.style.setProperty('--size', size + 'px');
       star.style.setProperty('--drift', drift + 'px');
       star.style.setProperty('--rise', '-' + rise + 'px');
       star.style.setProperty('--rot', rotate + 'deg');
       star.style.setProperty('--delay', delay + 'ms');
       star.style.setProperty('--duration', duration + 'ms');
-      star.style.left = (18 + Math.random() * 64) + '%';
+      star.style.left = (20 + Math.random() * 60) + '%';
       star.appendChild(createFxStarSvg());
       star.addEventListener('animationend', function onStarEnd(event) {
         if (event.animationName !== 'quiz-star-rise') return;
@@ -401,7 +404,7 @@
     }
     window.setTimeout(function () {
       if (burst.parentNode) burst.parentNode.removeChild(burst);
-    }, 2600);
+    }, 2400);
   }
 
   function shakeWrong(optionEl) {
