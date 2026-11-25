@@ -156,22 +156,34 @@ main,
 .site-header__title {
   margin: 0;
   color: var(--soft-gold);
-  font-family: var(--font-ar);
   font-size: clamp(1.25rem, 5vw, 2.1rem);
   font-weight: 700;
   line-height: 1.45;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }
 
+/* Both title lines share the gold styling; each language keeps its own font. */
+.site-header__title span {
+  display: block;
+}
+
+.site-header__title [lang="sv"] {
+  font-family: var(--font-sv);
+}
+
+.site-header__title [lang="ar"] {
+  font-family: var(--font-ar);
+}
+
 .site-header__subtitle {
   margin: 0;
   color: var(--warm-white);
-  font-size: 1.15rem;
+  font-size: 1rem;
 }
 
 .site-header__subtitle [lang="ar"] {
   font-family: var(--font-ar);
-  font-size: 1.15rem;
+  font-size: 1rem;
 }
 
 /* Thin gold rule with a centred star, replacing the old paired ornaments. */

@@ -27,9 +27,9 @@ Desktop = 1280px wide, Mobile = 360px wide. Heights are fitted to the page conte
 
 | File | URL | What it shows |
 |---|---|---|
-| `quiz-gate-desktop.png` / `quiz-gate-mobile.png` | `/day.html?day=1&preview=1` | "Jag har läst klart / أنهيت القراءة" button below the reading; quiz still hidden. |
+| `quiz-gate-desktop.png` / `quiz-gate-mobile.png` | `/day.html?day=1&preview=1` | "Jag har läst färdigt / أنهيت القراءة" button below the reading; quiz still hidden. |
 | `quiz-wrong-desktop.png` | `/day.html?day=1&preview=1` (after a wrong click) | Wrong option soft red + ✗, disabled; gentle "Försök igen / حاول مرة أخرى" feedback. |
-| `quiz-half-desktop.png` / `quiz-half-mobile.png` | (wrong, then correct) | Correct option green + ✓, explanation, half star, "Börja om / إعادة المحاولة" reset. |
+| `quiz-half-desktop.png` / `quiz-half-mobile.png` | (wrong, then correct) | Correct option green + ✓, explanation, half star, "Nytt försök / إعادة المحاولة" reset. |
 | `quiz-full-desktop.png` | (correct on first try) | Full gold star for a first-try correct answer. |
 
 ## Reference-look restyle
@@ -43,7 +43,7 @@ Desktop = 1280px wide, Mobile = 360px wide. Heights are fitted to the page conte
 | `restyled-day-1280.png` | 1280px | Desktop day page: Swedish/Arabic columns with gold ✦ divider. |
 | `restyled-quiz-1280.png` | 1280px | Quiz restyled to the dark card theme (wrong → correct, half star). |
 | `bright-day-1280.png` / `bright-day-360.png` | `?day=1&preview=1` | Day page after the brightness fix — background identical to the home page. (Older `restyled-day-*` shots show the darker version.) |
-| `header-centered-1280.png` | `?preview=12` | Header with the three text lines centred in the page (logo still left), 1.15rem bilingual subtitles and centred ★ divider. |
+| `header-centered-1280.png` | `?preview=12` | Header with the bilingual gold title and white subtitle centred in the page (logo still left), plus the centred ★ divider. |
 
 ## Notes for colleagues
 
@@ -51,5 +51,5 @@ Desktop = 1280px wide, Mobile = 360px wide. Heights are fitted to the page conte
 - Quiz questions on days 1, 12 and 25 are clearly marked `[PLACEHOLDER]` samples — real questions are still to be supplied. Days without a quiz show no quiz section.
 - The saying card appears on the home page only, and only during 1–25 December (or via `?preview=N`).
 - Day 25 currently has reference "Psalm 25" but the supplied text is Psalm 2:1–3; this is pending confirmation.
-- The fixed Arabic title is unchanged; the new bilingual subtitle sits below it.
+- The bilingual gold title shows Swedish above the fixed Arabic title; the white subtitle sits below it.
 - "SOUF S:t Jacob" appears under the logo; footer reads "För Mor Ignatius gruppen" / "لصف مور اغناطيوس".
