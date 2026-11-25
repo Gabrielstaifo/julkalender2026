@@ -73,10 +73,21 @@
   },
   {
     "day": 5,
-    "ref_sv": "[MISSING ref_sv — day 5]",
-    "ref_ar": "[MISSING ref_ar — day 5]",
-    "text_sv": "[MISSING text_sv — day 5]",
-    "text_ar": "[MISSING text_ar — day 5]"
+    "ref_sv": "Psalm 1",
+    "ref_ar": "مزمور ١",
+    "text_sv": "1 Salig är den som inte följer de gudlösas råd, som inte går in på syndares väg och sitter bland föraktare, 2 utan har sin glädje i HERRENS undervisning och begrundar  hans ord både dag och natt. 3 Han är som ett träd, planterat vid vattenbäckar, som bär sin frukt i rätt tid och vars löv inte vissnar. Och allt han gör, det lyckas väl.",
+    "text_ar": "1 طوبى للرجل الذي لم يسلك في مشورة الأشرار، وفي طريق الخطاة لم يقف، وفي مجلس المستهزئين لم يجلس 2 لكن في ناموس الرب مسرته، وفي ناموسه يلهج نهارا وليلا 3 فيكون كشجرة مغروسة عند مجاري المياه، التي تعطي ثمرها في أوانه، وورقها لا يذبل. وكل ما يصنعه ينجح",
+    "quiz": {
+      "q_ar": "كم يوماً مكث الرب يسوع على الأرض بعد قيامته؟",
+      "q_sv": "Hur många dagar stannade Herren Jesus på jorden efter sin uppståndelse?",
+      "options": [
+        { "ar": "٤٠ أيام", "sv": "40 dagar", "correct": true },
+        { "ar": "٥٠ أيام", "sv": "50 dagar", "correct": false },
+        { "ar": "٦٠ أيام", "sv": "60 dagar", "correct": false }
+      ],
+      "explain_ar": "مكث الرب يسوع على الأرض ٤٠ يوماً بعد قيامته، حيث ظهر لتلاميذه وأعطاهم التعليمات قبل صعوده إلى السماء.",
+      "explain_sv": "Herren Jesus stannade 40 dagar på jorden efter sin uppståndelse, där han visade sig för sina disciple och gav dem instruktioner innan han steg upp till himlen."
+    }
   },
   {
     "day": 6,
