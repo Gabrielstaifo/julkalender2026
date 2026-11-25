@@ -297,6 +297,163 @@
     container.appendChild(label);
   }
 
+  function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function cleanupAfterAnimation(element, animationName, fallbackMs) {
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      element.removeEventListener('animationend', onEnd);
+      if (element.parentNode) element.parentNode.removeChild(element);
+    }
+    function onEnd(event) {
+      if (!animationName || event.animationName === animationName) finish();
+    }
+    element.addEventListener('animationend', onEnd);
+    window.setTimeout(finish, fallbackMs || 2200);
+  }
+
+  function createFxStarSvg() {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.classList.add('quiz__fx-star-svg');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M12 2.5l2.9 5.88 6.5.95-4.7 4.58 1.1 6.47L12 17.9l-5.8 3.05 1.1-6.47L2.6 9.33l6.5-.95L12 2.5z');
+    path.setAttribute('fill', 'currentColor');
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function celebrate(optionEl, firstTry) {
+    if (!optionEl || optionEl.dataset.celebrated === '1') return;
+    optionEl.dataset.celebrated = '1';
+    if (prefersReducedMotion()) return;
+
+    optionEl.classList.remove('quiz__option--celebrate');
+    // Reflow so the glow animation can replay only when explicitly triggered.
+    void optionEl.offsetWidth; // eslint-disable-line no-unused-expressions
+    optionEl.classList.add('quiz__option--celebrate');
+    optionEl.addEventListener('animationend', function onGlow(event) {
+      if (event.animationName !== 'quiz-correct-glow') return;
+      optionEl.removeEventListener('animationend', onGlow);
+      optionEl.classList.remove('quiz__option--celebrate');
+    });
+
+    var icon = optionEl.querySelector('.quiz__icon');
+    if (icon) {
+      icon.classList.remove('quiz__icon--pop');
+      void icon.offsetWidth; // eslint-disable-line no-unused-expressions
+      icon.classList.add('quiz__icon--pop');
+      icon.addEventListener('animationend', function onPop(event) {
+        if (event.animationName !== 'quiz-icon-pop') return;
+        icon.removeEventListener('animationend', onPop);
+        icon.classList.remove('quiz__icon--pop');
+      });
+    }
+
+    var container = optionEl.closest('.quiz__options') || optionEl.parentNode;
+    if (!container) return;
+    if (container.querySelector('.quiz__star-burst')) return;
+    container.style.position = container.style.position || 'relative';
+    var burst = createElement('span', 'quiz__star-burst');
+    burst.setAttribute('aria-hidden', 'true');
+    // Anchor the burst over the correct option so stars rise above it without causing scroll.
+    burst.style.left = optionEl.offsetLeft + 'px';
+    burst.style.width = optionEl.offsetWidth + 'px';
+    burst.style.top = (optionEl.offsetTop - 90) + 'px';
+    burst.style.height = '120px';
+    container.appendChild(burst);
+
+    var count = firstTry ? 10 : 4;
+    var remaining = count;
+    for (var i = 0; i < count; i += 1) {
+      var star = createElement('span', 'quiz__fx-star');
+      var size = 10 + Math.round(Math.random() * 10);
+      var drift = Math.round((Math.random() - 0.5) * 28);
+      var rise = 62 + Math.round(Math.random() * 44);
+      var rotate = Math.round((Math.random() - 0.5) * 90);
+      var delay = Math.round(Math.random() * 220);
+      var duration = 1500 + Math.round(Math.random() * 350);
+      star.style.setProperty('--size', size + 'px');
+      star.style.setProperty('--drift', drift + 'px');
+      star.style.setProperty('--rise', '-' + rise + 'px');
+      star.style.setProperty('--rot', rotate + 'deg');
+      star.style.setProperty('--delay', delay + 'ms');
+      star.style.setProperty('--duration', duration + 'ms');
+      star.style.left = (18 + Math.random() * 64) + '%';
+      star.appendChild(createFxStarSvg());
+      star.addEventListener('animationend', function onStarEnd(event) {
+        if (event.animationName !== 'quiz-star-rise') return;
+        event.currentTarget.removeEventListener('animationend', onStarEnd);
+        if (event.currentTarget.parentNode) event.currentTarget.parentNode.removeChild(event.currentTarget);
+        remaining -= 1;
+        if (remaining <= 0 && burst.parentNode) burst.parentNode.removeChild(burst);
+      });
+      burst.appendChild(star);
+      window.setTimeout(function (node) {
+        if (node && node.parentNode) node.parentNode.removeChild(node);
+      }.bind(null, star), duration + delay + 250);
+    }
+    window.setTimeout(function () {
+      if (burst.parentNode) burst.parentNode.removeChild(burst);
+    }, 2600);
+  }
+
+  function shakeWrong(optionEl) {
+    if (!optionEl || prefersReducedMotion()) return;
+    optionEl.classList.remove('quiz__option--shake');
+    void optionEl.offsetWidth; // eslint-disable-line no-unused-expressions
+    optionEl.classList.add('quiz__option--shake');
+    optionEl.addEventListener('animationend', function onShake(event) {
+      if (event.animationName !== 'quiz-shake') return;
+      optionEl.removeEventListener('animationend', onShake);
+      optionEl.classList.remove('quiz__option--shake');
+    });
+  }
+
+  function showCandle(container) {
+    if (!container || container.querySelector('.quiz__candle')) return;
+    var candle = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    candle.setAttribute('viewBox', '0 0 32 48');
+    candle.setAttribute('aria-hidden', 'true');
+    candle.setAttribute('focusable', 'false');
+    candle.classList.add('quiz__candle');
+
+    var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    body.setAttribute('x', '9');
+    body.setAttribute('y', '20');
+    body.setAttribute('width', '14');
+    body.setAttribute('height', '22');
+    body.setAttribute('rx', '3');
+    body.setAttribute('fill', '#f6edd6');
+
+    var wick = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    wick.setAttribute('x', '15.25');
+    wick.setAttribute('y', '14');
+    wick.setAttribute('width', '1.5');
+    wick.setAttribute('height', '6');
+    wick.setAttribute('rx', '0.75');
+    wick.setAttribute('fill', '#5b4a50');
+
+    var flame = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    flame.classList.add('quiz__candle-flame');
+    var outer = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    outer.setAttribute('d', 'M16 4c2.8 4 6 7 6 10.5a6 6 0 1 1-12 0C10 11 13.2 8 16 4z');
+    outer.setAttribute('fill', '#f4a623');
+    var inner = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    inner.setAttribute('d', 'M16 9c1.6 2.4 3.2 4.2 3.2 6.2a3.2 3.2 0 1 1-6.4 0c0-2 1.6-3.8 3.2-6.2z');
+    inner.setAttribute('fill', '#ffd978');
+    flame.append(outer, inner);
+
+    candle.append(body, wick, flame);
+    container.appendChild(candle);
+  }
+
   function buildQuizBody(section, entry, quiz, record) {
     var heading = createElement('h3', 'quiz__heading bilingual');
     heading.id = 'quiz-heading';
@@ -383,9 +540,12 @@
         var stars = state.attempts === 0 ? 1 : 0.5;
         markCorrect(stars);
         Progress.saveDay(entry.day, { attempts: state.attempts, stars: stars, completed: true });
+        showCandle(result);
+        celebrate(button, stars === 1);
       } else {
         state.attempts += 1;
         setOptionState(button, 'wrong');
+        shakeWrong(button);
         feedback.replaceChildren();
         appendBilingual(feedback, 'quizTryAgain');
       }
@@ -394,6 +554,7 @@
     if (state.completed) {
       // Solved on a previous visit: show the answer and earned star directly.
       markCorrect(typeof record.stars === 'number' ? record.stars : 1);
+      showCandle(result);
     } else {
       buttons[0].button.focus();
     }

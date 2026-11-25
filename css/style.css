@@ -642,12 +642,14 @@ main,
 }
 
 .quiz__options {
+  position: relative;
   display: grid;
   gap: 0.6rem;
   margin: 0 0 1rem;
 }
 
 .quiz__option {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.6rem;
@@ -695,7 +697,10 @@ main,
   border-color: var(--quiz-green);
   background: var(--quiz-green);
   color: #fff;
-  animation: quiz-glow 0.8s ease;
+}
+
+.quiz__option--celebrate {
+  animation: quiz-correct-glow 1.2s ease;
 }
 
 .quiz__option--wrong {
@@ -703,6 +708,9 @@ main,
   background: var(--quiz-red);
   color: #fff;
   opacity: 0.85;
+}
+
+.quiz__option--shake {
   animation: quiz-shake 0.3s ease;
 }
 
@@ -733,6 +741,48 @@ main,
   align-items: center;
   gap: 0.75rem;
   margin: 0 0 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quiz__candle {
+  width: 1.75rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+.quiz__candle-flame {
+  transform-origin: 16px 15px;
+  animation: quiz-candle-flicker 2.6s ease-in-out infinite;
+}
+
+.quiz__star-burst {
+  position: absolute;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.quiz__fx-star {
+  position: absolute;
+  bottom: 0.2rem;
+  width: var(--size, 14px);
+  height: var(--size, 14px);
+  color: var(--soft-gold);
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.45));
+  animation: quiz-star-rise var(--duration, 1800ms) ease-out var(--delay, 0ms) forwards;
+  will-change: transform, opacity;
+}
+
+.quiz__fx-star-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.quiz__icon--pop {
+  animation: quiz-icon-pop 0.35s ease;
 }
 
 /* Full star is solid gold; half star clips the gold layer to 50%. */
@@ -779,9 +829,38 @@ main,
   75% { transform: translateX(4px); }
 }
 
-@keyframes quiz-glow {
-  from { box-shadow: 0 0 0 0 rgba(46, 125, 79, 0.5); }
-  to { box-shadow: 0 0 0 8px rgba(46, 125, 79, 0); }
+@keyframes quiz-correct-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+  20% { box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2), 0 0 18px rgba(232, 200, 114, 0.55); }
+  50% { box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.12), 0 0 10px rgba(232, 200, 114, 0.3); }
+  75% { box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.18), 0 0 16px rgba(232, 200, 114, 0.5); }
+}
+
+@keyframes quiz-icon-pop {
+  0% { transform: scale(0.6); opacity: 0.4; }
+  60% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes quiz-star-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.85);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift, 0px), var(--rise, -70px), 0) rotate(var(--rot, 20deg)) scale(1);
+  }
+}
+
+@keyframes quiz-candle-flicker {
+  0%, 100% { transform: scaleY(1) skewX(0deg); opacity: 0.95; }
+  25% { transform: scaleY(1.03) skewX(-1.5deg); opacity: 1; }
+  50% { transform: scaleY(0.97) skewX(1deg); opacity: 0.9; }
+  75% { transform: scaleY(1.04) skewX(-0.8deg); opacity: 1; }
 }
 
 /* ---- Reference-look theme pass: translucent cards and night-gold details ---- */
@@ -1047,5 +1126,15 @@ main,
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
+  }
+
+  .quiz__candle-flame {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .quiz__star-burst,
+  .quiz__fx-star {
+    display: none !important;
   }
 }
