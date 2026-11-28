@@ -87,12 +87,31 @@
     nav.replaceChildren(previous, home, next);
   }
 
+  // Turn **bold** markers into real <strong> nodes without using innerHTML.
+  // Plain text between markers stays as text nodes, so verse text is unchanged.
+  function appendMarkupText(parent, text) {
+    var pattern = /\*\*([\s\S]+?)\*\*/g;
+    var lastIndex = 0;
+    var match;
+    while ((match = pattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parent.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+      }
+      parent.appendChild(createElement('strong', null, match[1]));
+      lastIndex = pattern.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      parent.appendChild(document.createTextNode(text.slice(lastIndex)));
+    }
+  }
+
   function appendParagraphs(parent, text) {
     String(text).split(/\n\s*\n/).forEach(function (block) {
       var trimmed = block.trim();
       if (!trimmed) return;
-      var paragraph = createElement('p', 'reading__text', trimmed);
+      var paragraph = createElement('p', 'reading__text');
       if (isMissing(trimmed)) paragraph.classList.add('is-placeholder');
+      appendMarkupText(paragraph, trimmed);
       parent.appendChild(paragraph);
     });
   }
